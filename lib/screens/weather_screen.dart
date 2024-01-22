@@ -5,6 +5,7 @@ import 'package:flutter_weather_app/components/coordinate_provider.dart';
 import 'package:provider/provider.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -16,6 +17,10 @@ class WeatherScreen extends StatefulWidget {
 class _WeatherScreenState extends State<WeatherScreen> {
   String? apiKey = dotenv.env['API_KEY'] ?? "";
 
+  // Height of the displayed data changed acordingly if keyboard is opened and closed
+  double keyboardSize = 0;
+
+  // Data gained from the openweathermap API
   String cityInput = "";
   String cityName = "";
   String weatherIcon = "";
@@ -28,6 +33,30 @@ class _WeatherScreenState extends State<WeatherScreen> {
   int visibility = 0;
   double lat = 0;
   double lon = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Observe keyboard visibility changes
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      // Update keyboardSize based on visibility
+      if (!visible) {
+        // Keyboard closed, delay the animation to not overlap with closing keyboard
+        Future.delayed(const Duration(milliseconds: 50), () {
+          setState(() {
+            keyboardSize = 0;
+          });
+        });
+      }
+      if (visible) {
+        // Keyboard opened, instant animation to not overlap with keyboard opening
+        setState(() {
+          keyboardSize = 200;
+        });
+      }
+    });
+  }
 
   void fetchWeatherData() async {
     setState(() {
@@ -79,75 +108,81 @@ class _WeatherScreenState extends State<WeatherScreen> {
             cityName.isNotEmpty &&
             temperature != 0 &&
             windSpeed != 0)
-          Column(
-            children: <Widget>[
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
+            height: MediaQuery.of(context).size.height - 250 - keyboardSize,
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      color: Colors.lightBlue,
-                      child: Image.network(
-                        'https://openweathermap.org/img/wn/$weatherIcon@4x.png',
-                        height: 150,
-                        width: 150,
-                      ),
-                    ),
-                  ),
-                  Column(
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text(cityName, style: const TextStyle(fontSize: 40)),
-                      Row(
-                        children: [
-                          const Icon(Icons.thermostat),
-                          const SizedBox(width: 10),
-                          Text("$temperature °C",
-                              style: const TextStyle(fontSize: 30)),
-                        ],
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          color: Colors.lightBlue,
+                          child: Image.network(
+                            'https://openweathermap.org/img/wn/$weatherIcon@4x.png',
+                            height: 150,
+                            width: 150,
+                          ),
+                        ),
                       ),
+                      Column(
+                        children: <Widget>[
+                          Text(cityName, style: const TextStyle(fontSize: 40)),
+                          Row(
+                            children: [
+                              const Icon(Icons.thermostat),
+                              const SizedBox(width: 10),
+                              Text("$temperature °C",
+                                  style: const TextStyle(fontSize: 30)),
+                            ],
+                          ),
+                        ],
+                      )
                     ],
-                  )
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.thermostat),
+                          description: "Feels like",
+                          state: "$feelsLike °C"),
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.air),
+                          description: "Wind speed",
+                          state: "$windSpeed m/s"),
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.cloud_outlined),
+                          description: "Cloudiness",
+                          state: "$cloudyness %"),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.compress),
+                          description: "Pressure",
+                          state: "$pressure hPa"),
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.water_drop_outlined),
+                          description: "Humidity",
+                          state: "$humidity %"),
+                      WeatherDataBlock(
+                          myIcon: const Icon(Icons.visibility_outlined),
+                          description: "Visibility",
+                          state: "$visibility m"),
+                    ],
+                  ),
                 ],
               ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.thermostat),
-                      description: "Feels like",
-                      state: "$feelsLike °C"),
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.air),
-                      description: "Wind speed",
-                      state: "$windSpeed m/s"),
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.cloud_outlined),
-                      description: "Cloudiness",
-                      state: "$cloudyness %"),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.compress),
-                      description: "Pressure",
-                      state: "$pressure hPa"),
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.water_drop_outlined),
-                      description: "Humidity",
-                      state: "$humidity %"),
-                  WeatherDataBlock(
-                      myIcon: const Icon(Icons.visibility_outlined),
-                      description: "Visibility",
-                      state: "$visibility m"),
-                ],
-              ),
-            ],
+            ),
           ),
         Expanded(
           child: Align(
