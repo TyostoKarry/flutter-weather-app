@@ -18,16 +18,22 @@ class WeatherDataBlock extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-        color: Colors.lightBlue,
+        color: const Color.fromARGB(255, 74, 120, 255),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           myIcon,
-          Text(description, style: const TextStyle(fontSize: 10)),
+          Text(
+            description,
+            style: const TextStyle(fontSize: 13, color: Colors.black),
+          ),
           const SizedBox(width: 10),
-          Text(state, style: const TextStyle(fontSize: 18)),
+          Text(
+            state,
+            style: const TextStyle(fontSize: 18, color: Colors.black),
+          ),
         ],
       ),
     );

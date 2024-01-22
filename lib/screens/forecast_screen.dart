@@ -77,41 +77,57 @@ class _ForecastScreenState extends State<ForecastScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(cityName, style: const TextStyle(fontSize: 40)),
+        title: Text(
+          cityName,
+          style: const TextStyle(fontSize: 40, color: Colors.white),
+        ),
         centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 27, 30, 35),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 27, 30, 35),
       body: ListView.builder(
         itemCount: weatherForecast.length,
         itemBuilder: (context, index) {
           return Container(
             margin: const EdgeInsets.fromLTRB(20, 8, 20, 8),
             decoration: BoxDecoration(
-              color: Colors.lightBlue,
+              color: const Color.fromARGB(255, 74, 120, 255),
               borderRadius: BorderRadius.circular(5),
             ),
             child: ListTile(
               leading: Image.network(
                   'https://openweathermap.org/img/wn/${weatherForecast[index].icon}@4x.png'),
               title: Center(
-                child: Text(weatherForecast[index].timestamp),
+                child: Text(
+                  weatherForecast[index].timestamp,
+                  style: const TextStyle(color: Colors.black),
+                ),
               ),
               subtitle: Column(
                 children: [
-                  Text(weatherForecast[index].description),
+                  Text(
+                    weatherForecast[index].description,
+                    style: const TextStyle(color: Colors.black),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.thermostat),
-                          Text("${weatherForecast[index].temperature} °C"),
+                          const Icon(Icons.thermostat, color: Colors.black),
+                          Text(
+                            "${weatherForecast[index].temperature} °C",
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ],
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.air),
-                          Text("${weatherForecast[index].windSpeed} m/s"),
+                          const Icon(Icons.air, color: Colors.black),
+                          Text(
+                            "${weatherForecast[index].windSpeed} m/s",
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ],
                       ),
                     ],

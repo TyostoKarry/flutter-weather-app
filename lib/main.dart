@@ -51,8 +51,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
             },
           );
         },
-        indicatorColor: Colors.lightBlue,
-        backgroundColor: const Color.fromARGB(255, 200, 200, 200),
+        indicatorColor: const Color.fromARGB(255, 74, 120, 255),
+        backgroundColor: const Color.fromARGB(255, 27, 30, 35),
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(

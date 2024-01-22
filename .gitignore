@@ -32,6 +32,7 @@ pubspec.lock
 /build/
 .metadata
 analysis_options.yaml
+devtools_options.yaml
 
 # Symbolication related
 app.*.symbols
