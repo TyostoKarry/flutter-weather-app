@@ -4,16 +4,15 @@ import 'package:flutter_weather_app/components/coordinate_provider.dart';
 import 'package:provider/provider.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
-import 'dart:developer';
 
-class forecastData {
+class ForecastData {
   final String timestamp;
   final String description;
   final double temperature;
   final double windSpeed;
   final String icon;
 
-  forecastData(this.timestamp, this.description, this.temperature,
+  ForecastData(this.timestamp, this.description, this.temperature,
       this.windSpeed, this.icon);
 }
 
@@ -26,7 +25,7 @@ class ForecastScreen extends StatefulWidget {
 
 class _ForecastScreenState extends State<ForecastScreen> {
   String? apiKey = dotenv.env['API_KEY'] ?? "";
-  late List<forecastData> weatherForecast;
+  late List<ForecastData> weatherForecast;
   String cityName = "";
 
   @override
@@ -45,8 +44,6 @@ class _ForecastScreenState extends State<ForecastScreen> {
     double lat = coordinateProvider.lat;
     double lon = coordinateProvider.lon;
 
-    log("lat: $lat, lon: $lon");
-
     setState(() {
       weatherForecast = [];
     });
@@ -54,14 +51,12 @@ class _ForecastScreenState extends State<ForecastScreen> {
     Uri uri = Uri.parse(
         "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey");
     var response = await http.get(uri);
-    log("${response.statusCode}");
     if (response.statusCode == 200) {
       var weatherData = json.decode(response.body);
-      log("$weatherData");
       setState(() {
         cityName = weatherData["city"]["name"];
         weatherForecast = (weatherData["list"] as List).map((item) {
-          return forecastData(
+          return ForecastData(
             item["dt_txt"],
             item["weather"][0]["description"],
             item["main"]["temp"].toDouble(),
@@ -92,28 +87,47 @@ class _ForecastScreenState extends State<ForecastScreen> {
             margin: const EdgeInsets.fromLTRB(20, 8, 20, 8),
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 74, 120, 255),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(
               leading: Image.network(
                   'https://openweathermap.org/img/wn/${weatherForecast[index].icon}@4x.png'),
               title: Center(
-                child: Text(
-                  weatherForecast[index].timestamp,
-                  style: const TextStyle(color: Colors.black),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        const Icon(Icons.calendar_month, color: Colors.black),
+                        Text(
+                          "${weatherForecast[index].timestamp.substring(8, 10)}.${weatherForecast[index].timestamp.substring(5, 7)}.${weatherForecast[index].timestamp.substring(0, 4)}",
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        const Icon(Icons.schedule, color: Colors.black),
+                        Text(
+                          weatherForecast[index].timestamp.substring(11, 13),
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               subtitle: Column(
-                children: [
+                children: <Widget>[
                   Text(
                     weatherForecast[index].description,
                     style: const TextStyle(color: Colors.black),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       Row(
-                        children: [
+                        children: <Widget>[
                           const Icon(Icons.thermostat, color: Colors.black),
                           Text(
                             "${weatherForecast[index].temperature} °C",
@@ -122,7 +136,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
                         ],
                       ),
                       Row(
-                        children: [
+                        children: <Widget>[
                           const Icon(Icons.air, color: Colors.black),
                           Text(
                             "${weatherForecast[index].windSpeed} m/s",

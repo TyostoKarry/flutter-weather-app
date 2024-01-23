@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_weather_app/components/sunrise_sunset_line.dart';
 import "package:flutter_weather_app/components/weather_data_block.dart";
 import 'package:flutter_weather_app/components/coordinate_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
   int pressure = 0;
   int cloudyness = 0;
   int visibility = 0;
+  DateTime sunriseTime = DateTime(0);
+  DateTime sunsetTime = DateTime(0);
   double lat = 0;
   double lon = 0;
+
+  DateTime currentTime = DateTime.now();
 
   @override
   void initState() {
@@ -69,6 +74,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
       pressure = 0;
       cloudyness = 0;
       visibility = 0;
+      sunriseTime = DateTime(0);
+      sunsetTime = DateTime(0);
       lat = 0;
       lon = 0;
     });
@@ -88,11 +95,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
         pressure = weatherData["main"]["pressure"].toInt();
         cloudyness = weatherData["clouds"]["all"].toInt();
         visibility = weatherData["visibility"].toInt();
+        sunriseTime = DateTime.fromMillisecondsSinceEpoch(
+            weatherData["sys"]["sunrise"] * 1000);
+        sunsetTime = DateTime.fromMillisecondsSinceEpoch(
+            weatherData["sys"]["sunset"] * 1000);
         lat = weatherData["coord"]["lat"].toDouble();
         lon = weatherData["coord"]["lon"].toDouble();
       });
     }
     coordinateUpdater(lat, lon);
+    currentTime = DateTime.now();
   }
 
   void coordinateUpdater(double lat, double lon) {
@@ -136,7 +148,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                   Text(cityName,
                                       style: const TextStyle(fontSize: 35)),
                                   Row(
-                                    children: [
+                                    children: <Widget>[
                                       const Icon(Icons.thermostat),
                                       const SizedBox(width: 10),
                                       Text("$temperature °C",
@@ -151,58 +163,200 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.thermostat,
-                              color: Colors.black,
-                            ),
-                            description: "Feels like",
-                            state: "$feelsLike °C"),
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.air,
-                              color: Colors.black,
-                            ),
-                            description: "Wind speed",
-                            state: "$windSpeed m/s"),
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.cloud_outlined,
-                              color: Colors.black,
-                            ),
-                            description: "Cloudiness",
-                            state: "$cloudyness %"),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.thermostat,
+                                color: Colors.black,
+                              ),
+                              description: "Feels like",
+                              state: "$feelsLike °C"),
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.air,
+                                color: Colors.black,
+                              ),
+                              description: "Wind speed",
+                              state: "$windSpeed m/s"),
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.cloud_outlined,
+                                color: Colors.black,
+                              ),
+                              description: "Cloudiness",
+                              state: "$cloudyness %"),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.compress,
-                              color: Colors.black,
-                            ),
-                            description: "Pressure",
-                            state: "$pressure hPa"),
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.water_drop_outlined,
-                              color: Colors.black,
-                            ),
-                            description: "Humidity",
-                            state: "$humidity %"),
-                        WeatherDataBlock(
-                            myIcon: const Icon(
-                              Icons.visibility_outlined,
-                              color: Colors.black,
-                            ),
-                            description: "Visibility",
-                            state: "$visibility m"),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.compress,
+                                color: Colors.black,
+                              ),
+                              description: "Pressure",
+                              state: "$pressure hPa"),
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.water_drop_outlined,
+                                color: Colors.black,
+                              ),
+                              description: "Humidity",
+                              state: "$humidity %"),
+                          WeatherDataBlock(
+                              myIcon: const Icon(
+                                Icons.visibility_outlined,
+                                color: Colors.black,
+                              ),
+                              description: "Visibility",
+                              state: "$visibility m"),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          color: const Color.fromARGB(255, 74, 120, 255),
+                          child: Column(
+                            children: <Widget>[
+                              const SizedBox(height: 20),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        const Icon(Icons.wb_twighlight),
+                                        // Arrow down or up based on if it is night or day
+                                        Icon(sunriseTime.millisecondsSinceEpoch >
+                                                    currentTime
+                                                        .millisecondsSinceEpoch ||
+                                                sunsetTime
+                                                        .millisecondsSinceEpoch <
+                                                    currentTime
+                                                        .millisecondsSinceEpoch
+                                            ? Icons.arrow_downward
+                                            : Icons.arrow_upward),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        const Icon(Icons.wb_twighlight),
+                                        // Arrow up or down based on if it is night or day
+                                        Icon(sunriseTime.millisecondsSinceEpoch >
+                                                    currentTime
+                                                        .millisecondsSinceEpoch ||
+                                                sunsetTime
+                                                        .millisecondsSinceEpoch <
+                                                    currentTime
+                                                        .millisecondsSinceEpoch
+                                            ? Icons.arrow_upward
+                                            : Icons.arrow_downward),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    // "Sunset" or "Sunrise" based on if it is night or day
+                                    Text(sunriseTime.millisecondsSinceEpoch >
+                                                currentTime
+                                                    .millisecondsSinceEpoch ||
+                                            sunsetTime.millisecondsSinceEpoch <
+                                                currentTime
+                                                    .millisecondsSinceEpoch
+                                        ? "Sunset"
+                                        : "Sunrise"),
+                                    // "Sunrise" or "Sunset" based on if it is night or day
+                                    Text(sunriseTime.millisecondsSinceEpoch >
+                                                currentTime
+                                                    .millisecondsSinceEpoch ||
+                                            sunsetTime.millisecondsSinceEpoch <
+                                                currentTime
+                                                    .millisecondsSinceEpoch
+                                        ? "Sunrise"
+                                        : "Sunset"),
+                                  ],
+                                ),
+                              ),
+                              SunriseSunsetLine(
+                                sunriseTime: sunriseTime,
+                                sunsetTime: sunsetTime,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    // SunsetTime or SunriseTime based on if it is night or day
+                                    Text(
+                                      sunriseTime.millisecondsSinceEpoch >
+                                                  currentTime
+                                                      .millisecondsSinceEpoch ||
+                                              sunsetTime
+                                                      .millisecondsSinceEpoch <
+                                                  currentTime
+                                                      .millisecondsSinceEpoch
+                                          ? sunsetTime.minute >= 10
+                                              ? "${sunsetTime.hour}.${sunsetTime.minute}"
+                                              : "${sunsetTime.hour}.0${sunsetTime.minute}"
+                                          : sunriseTime.minute >= 10
+                                              ? "${sunriseTime.hour}.${sunriseTime.minute}"
+                                              : "${sunriseTime.hour}.0${sunriseTime.minute}",
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    // SunriseTime or SunsetTime based on if it is night or day
+                                    Text(
+                                      sunriseTime.millisecondsSinceEpoch >
+                                                  currentTime
+                                                      .millisecondsSinceEpoch ||
+                                              sunsetTime
+                                                      .millisecondsSinceEpoch <
+                                                  currentTime
+                                                      .millisecondsSinceEpoch
+                                          ? sunriseTime.minute >= 10
+                                              ? "${sunriseTime.hour}.${sunriseTime.minute}"
+                                              : "${sunriseTime.hour}.0${sunriseTime.minute}"
+                                          : sunsetTime.minute >= 10
+                                              ? "${sunsetTime.hour}.${sunsetTime.minute}"
+                                              : "${sunsetTime.hour}.0${sunsetTime.minute}",
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -217,9 +371,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
+                      cursorColor: const Color.fromARGB(255, 74, 120, 255),
                       decoration: const InputDecoration(
                         labelText: "Enter City",
                         labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
                       ),
                       style: const TextStyle(color: Colors.white),
                       onChanged: (value) {

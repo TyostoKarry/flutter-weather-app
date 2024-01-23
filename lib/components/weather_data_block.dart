@@ -6,11 +6,10 @@ class WeatherDataBlock extends StatelessWidget {
   final String state;
 
   const WeatherDataBlock(
-      {Key? key,
+      {super.key,
       required this.myIcon,
       required this.description,
-      required this.state})
-      : super(key: key);
+      required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class WeatherDataBlock extends StatelessWidget {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           myIcon,
           Text(
             description,
