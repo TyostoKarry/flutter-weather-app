@@ -41,8 +41,8 @@ class _ForecastScreenState extends State<ForecastScreen> {
   void fetchWithCoords() async {
     final coordinateProvider = context.read<CoordinateProvider>();
 
-    double lat = coordinateProvider.lat;
-    double lon = coordinateProvider.lon;
+    double? lat = coordinateProvider.lat;
+    double? lon = coordinateProvider.lon;
 
     setState(() {
       weatherForecast = [];

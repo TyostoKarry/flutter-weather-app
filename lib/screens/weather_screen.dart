@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart';
+import 'package:auto_size_text_plus/auto_size_text.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -34,8 +37,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
   int visibility = 0;
   DateTime sunriseTime = DateTime(0);
   DateTime sunsetTime = DateTime(0);
-  double lat = 0;
-  double lon = 0;
+  double? lat = 0;
+  double? lon = 0;
 
   DateTime currentTime = DateTime.now();
 
@@ -61,24 +64,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
         });
       }
     });
+
+    // Gets weatherData of current location and displays it on screen on startup
+    fetchWeatherDataWithLocation();
   }
 
   void fetchWeatherData() async {
-    setState(() {
-      cityName = "";
-      weatherIcon = "";
-      temperature = 0;
-      feelsLike = 0;
-      windSpeed = 0;
-      humidity = 0;
-      pressure = 0;
-      cloudyness = 0;
-      visibility = 0;
-      sunriseTime = DateTime(0);
-      sunsetTime = DateTime(0);
-      lat = 0;
-      lon = 0;
-    });
+    clearWeatherData();
     if (cityInput == "") return;
     Uri uri = Uri.parse(
         "https://api.openweathermap.org/data/2.5/weather?q=$cityInput&units=metric&appid=$apiKey");
@@ -86,7 +78,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     if (response.statusCode == 200) {
       var weatherData = json.decode(response.body);
       setState(() {
-        cityName = cityInput[0].toUpperCase() + cityInput.substring(1);
+        cityName = weatherData["name"];
         weatherIcon = weatherData["weather"][0]["icon"].toString();
         temperature = weatherData["main"]["temp"].toDouble();
         feelsLike = weatherData["main"]["feels_like"].toDouble();
@@ -107,7 +99,74 @@ class _WeatherScreenState extends State<WeatherScreen> {
     currentTime = DateTime.now();
   }
 
-  void coordinateUpdater(double lat, double lon) {
+  void fetchWeatherDataWithLocation() async {
+    double? latitude;
+    double? longitude;
+    // Ask for location permission and if granted save location data
+    if (await Permission.location.request().isGranted) {
+      LocationData locationData = await Location().getLocation();
+      setState(() {
+        latitude = _formatDouble(locationData.latitude);
+        longitude = _formatDouble(locationData.longitude);
+      });
+      clearWeatherData();
+      if (latitude == null || longitude == null) return;
+      Uri uri = Uri.parse(
+          "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKey");
+      var response = await http.get(uri);
+      if (response.statusCode == 200) {
+        var weatherData = json.decode(response.body);
+        setState(() {
+          cityName = weatherData["name"];
+          weatherIcon = weatherData["weather"][0]["icon"].toString();
+          temperature = weatherData["main"]["temp"].toDouble();
+          feelsLike = weatherData["main"]["feels_like"].toDouble();
+          windSpeed = weatherData["wind"]["speed"].toDouble();
+          humidity = weatherData["main"]["humidity"].toInt();
+          pressure = weatherData["main"]["pressure"].toInt();
+          cloudyness = weatherData["clouds"]["all"].toInt();
+          visibility = weatherData["visibility"].toInt();
+          sunriseTime = DateTime.fromMillisecondsSinceEpoch(
+              weatherData["sys"]["sunrise"] * 1000);
+          sunsetTime = DateTime.fromMillisecondsSinceEpoch(
+              weatherData["sys"]["sunset"] * 1000);
+          lat = weatherData["coord"]["lat"].toDouble();
+          lon = weatherData["coord"]["lon"].toDouble();
+        });
+      }
+      coordinateUpdater(lat, lon);
+      currentTime = DateTime.now();
+    }
+  }
+
+  void clearWeatherData() {
+    setState(() {
+      cityName = "";
+      weatherIcon = "";
+      temperature = 0;
+      feelsLike = 0;
+      windSpeed = 0;
+      humidity = 0;
+      pressure = 0;
+      cloudyness = 0;
+      visibility = 0;
+      sunriseTime = DateTime(0);
+      sunsetTime = DateTime(0);
+      lat = 0;
+      lon = 0;
+    });
+  }
+
+  // Formats double? value to 2 decimals
+  double? _formatDouble(double? value) {
+    if (value != null) {
+      return double.parse(value.toStringAsFixed(2));
+    }
+    return null;
+  }
+
+  // Updates global provider with given cordinate data.
+  void coordinateUpdater(double? lat, double? lon) {
     Provider.of<CoordinateProvider>(context, listen: false)
         .updateCoordinates(lat, lon);
   }
@@ -143,20 +202,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 height: 150,
                                 width: 150,
                               ),
-                              Column(
-                                children: <Widget>[
-                                  Text(cityName,
-                                      style: const TextStyle(fontSize: 35)),
-                                  Row(
-                                    children: <Widget>[
-                                      const Icon(Icons.thermostat),
-                                      const SizedBox(width: 10),
-                                      Text("$temperature °C",
-                                          style: const TextStyle(fontSize: 30)),
-                                    ],
-                                  ),
-                                ],
-                              )
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: AutoSizeText(cityName,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 35)),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        const Icon(Icons.thermostat),
+                                        const SizedBox(width: 10),
+                                        Text("$temperature °C",
+                                            style:
+                                                const TextStyle(fontSize: 30)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -388,18 +458,36 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 60),
-                          backgroundColor:
-                              const Color.fromARGB(255, 74, 120, 255)),
-                      onPressed: () {
-                        fetchWeatherData();
-                      },
-                      child: const Text(
-                        "Fetch Weather",
-                        style: TextStyle(fontSize: 15, color: Colors.black),
-                      ),
+                    child: Row(
+                      children: <Widget>[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              minimumSize: Size(
+                                  MediaQuery.of(context).size.width - 130, 60),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 74, 120, 255)),
+                          onPressed: () {
+                            fetchWeatherData();
+                          },
+                          child: const Text(
+                            "Fetch Weather",
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(80, 60),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 74, 120, 255)),
+                            onPressed: () {
+                              fetchWeatherDataWithLocation();
+                            },
+                            child: const Icon(
+                              Icons.location_on,
+                              color: Colors.black,
+                            )),
+                      ],
                     ),
                   )
                 ],
