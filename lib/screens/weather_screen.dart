@@ -37,6 +37,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
   int visibility = 0;
   DateTime sunriseTime = DateTime(0);
   DateTime sunsetTime = DateTime(0);
+  double? rainAmount;
+  double? snowAmount;
   double? lat = 0;
   double? lon = 0;
 
@@ -91,6 +93,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
             weatherData["sys"]["sunrise"] * 1000);
         sunsetTime = DateTime.fromMillisecondsSinceEpoch(
             weatherData["sys"]["sunset"] * 1000);
+        if (weatherData["rain"] != null &&
+            weatherData["rain"].containsKey("1h")) {
+          rainAmount = _formatDouble(weatherData["rain"]["1h"]);
+        }
+        if (weatherData["snow"] != null &&
+            weatherData["snow"].containsKey("1h")) {
+          snowAmount = _formatDouble(weatherData["snow"]["1h"]);
+        }
         lat = weatherData["coord"]["lat"].toDouble();
         lon = weatherData["coord"]["lon"].toDouble();
       });
@@ -130,6 +140,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
               weatherData["sys"]["sunrise"] * 1000);
           sunsetTime = DateTime.fromMillisecondsSinceEpoch(
               weatherData["sys"]["sunset"] * 1000);
+          if (weatherData["rain"] != null &&
+              weatherData["rain"].containsKey("1h")) {
+            rainAmount = _formatDouble(weatherData["rain"]["1h"]);
+          }
+          if (weatherData["snow"] != null &&
+              weatherData["snow"].containsKey("1h")) {
+            snowAmount = _formatDouble(weatherData["snow"]["1h"]);
+          }
           lat = weatherData["coord"]["lat"].toDouble();
           lon = weatherData["coord"]["lon"].toDouble();
         });
@@ -152,6 +170,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
       visibility = 0;
       sunriseTime = DateTime(0);
       sunsetTime = DateTime(0);
+      rainAmount = null;
+      snowAmount = null;
       lat = 0;
       lon = 0;
     });
@@ -292,6 +312,90 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ],
                       ),
                     ),
+                    if (rainAmount != null || snowAmount != null)
+                      const SizedBox(height: 30),
+                    if (rainAmount != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            color: const Color.fromARGB(255, 74, 120, 255),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                children: <Widget>[
+                                  const Text(
+                                    "Amount of rain",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                  const Text(
+                                    "During last hour",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.water_drop_sharp,
+                                        size: 60,
+                                      ),
+                                      Text(
+                                        "${rainAmount.toString()} mm",
+                                        style: const TextStyle(fontSize: 30),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (rainAmount != null && snowAmount != null)
+                      const SizedBox(height: 30),
+                    if (snowAmount != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            color: const Color.fromARGB(255, 74, 120, 255),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                children: <Widget>[
+                                  const Text(
+                                    "Amount of snow",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                  const Text(
+                                    "During last hour",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.ac_unit,
+                                        size: 60,
+                                      ),
+                                      Text(
+                                        "${snowAmount.toString()} mm",
+                                        style: const TextStyle(fontSize: 30),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 30),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
