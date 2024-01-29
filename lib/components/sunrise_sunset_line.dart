@@ -1,13 +1,44 @@
 import 'package:flutter/material.dart';
 
-class SunriseSunsetLine extends StatelessWidget {
+class SunriseSunsetLine extends StatefulWidget {
   final DateTime sunriseTime;
   final DateTime sunsetTime;
 
-  SunriseSunsetLine(
-      {super.key, required this.sunriseTime, required this.sunsetTime});
+  const SunriseSunsetLine({
+    super.key,
+    required this.sunriseTime,
+    required this.sunsetTime,
+  });
 
+  @override
+  State<SunriseSunsetLine> createState() => _SunriseSunsetLineState();
+}
+
+class _SunriseSunsetLineState extends State<SunriseSunsetLine> {
+  late DateTime sunriseTime;
+  late DateTime sunsetTime;
+  bool day = true;
   final DateTime currentTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize sunrise and sunset times
+    sunriseTime = widget.sunriseTime;
+    sunsetTime = widget.sunsetTime;
+
+    // Makes sure the current time fits between sunrise and sunset times
+    if (currentTime.millisecondsSinceEpoch <=
+        sunriseTime.millisecondsSinceEpoch) {
+      sunsetTime = sunsetTime.subtract(const Duration(days: 1));
+      day = false;
+    } else if (currentTime.millisecondsSinceEpoch >=
+        sunsetTime.millisecondsSinceEpoch) {
+      sunriseTime = sunriseTime.add(const Duration(days: 1));
+      day = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,47 +49,41 @@ class SunriseSunsetLine extends StatelessWidget {
             size: const Size(300, 34),
             painter: SunriseSunsetLineDraw(),
           ),
-          // Calculates position and uses moon or sun icon based if it is night or day
-          sunriseTime.millisecondsSinceEpoch >
-                      currentTime.millisecondsSinceEpoch ||
-                  sunsetTime.millisecondsSinceEpoch <
-                      currentTime.millisecondsSinceEpoch
+          // Calculates position and uses moon or sun icon based if it is day or night
+          day
+              // Day
               ? Positioned(
-                  left: calculateIconPosition(
-                      sunsetTime,
-                      sunriseTime.add(const Duration(days: 1)),
-                      currentTime,
-                      300),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 74, 120,
-                          255), // Set your desired background color
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(2), // Adjust padding as needed
-                      child: Icon(
-                        Icons.dark_mode,
-                        size: 30,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                )
-              : Positioned(
                   left: calculateIconPosition(
                       sunriseTime, sunsetTime, currentTime, 300),
                   top: 0.6,
                   child: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 74, 120,
-                          255), // Set your desired background color
+                      color: Color.fromARGB(255, 74, 120, 255),
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.all(2), // Adjust padding as needed
+                      padding: EdgeInsets.all(2),
                       child: Icon(
                         Icons.wb_sunny,
+                        size: 30,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                )
+              // Night
+              : Positioned(
+                  left: calculateIconPosition(
+                      sunsetTime, sunriseTime, currentTime, 300),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(255, 74, 120, 255),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.dark_mode,
                         size: 30,
                         color: Colors.black,
                       ),
