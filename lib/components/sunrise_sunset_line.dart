@@ -46,15 +46,15 @@ class _SunriseSunsetLineState extends State<SunriseSunsetLine> {
       child: Stack(
         children: <Widget>[
           CustomPaint(
-            size: const Size(300, 34),
+            size: Size(MediaQuery.of(context).size.width - 100, 34),
             painter: SunriseSunsetLineDraw(),
           ),
           // Calculates position and uses moon or sun icon based if it is day or night
           day
               // Day
               ? Positioned(
-                  left: calculateIconPosition(
-                      sunriseTime, sunsetTime, currentTime, 300),
+                  left: calculateIconPosition(sunriseTime, sunsetTime,
+                      currentTime, MediaQuery.of(context).size.width - 100),
                   top: 0.6,
                   child: Container(
                     decoration: const BoxDecoration(
@@ -73,8 +73,8 @@ class _SunriseSunsetLineState extends State<SunriseSunsetLine> {
                 )
               // Night
               : Positioned(
-                  left: calculateIconPosition(
-                      sunsetTime, sunriseTime, currentTime, 300),
+                  left: calculateIconPosition(sunsetTime, sunriseTime,
+                      currentTime, MediaQuery.of(context).size.width - 100),
                   child: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
