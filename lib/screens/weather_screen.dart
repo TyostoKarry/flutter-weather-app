@@ -51,27 +51,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         .fetchWeatherDataWithLocation();
   }
 
-  // void clearWeatherData() {
-  //   setState(() {
-  //     cityName = "";
-  //     weatherIcon = "";
-  //     temperature = 0;
-  //     feelsLike = 0;
-  //     windSpeed = 0;
-  //     humidity = 0;
-  //     pressure = 0;
-  //     cloudyness = 0;
-  //     visibility = 0;
-  //     sunriseTime = DateTime(0);
-  //     sunsetTime = DateTime(0);
-  //     rainAmount = null;
-  //     snowAmount = null;
-  //     lat = 0;
-  //     lon = 0;
-  //     weatherDataState = false;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final weatherViewModel = Provider.of<WeatherViewModel>(context);

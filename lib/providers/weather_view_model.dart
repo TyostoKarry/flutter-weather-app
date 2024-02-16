@@ -5,6 +5,7 @@ import "dart:convert";
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
+// All the possible states of weather_screen
 enum WeatherViewState {
   error,
   invalidCity,
@@ -58,6 +59,7 @@ class WeatherViewModel extends ChangeNotifier {
   double? get lat => _lat;
   double? get lon => _lon;
 
+  // Weather data fetch with city name input
   void fetchWeatherData(cityInput) async {
     _weatherViewState = WeatherViewState.loading;
     notifyListeners();
@@ -108,6 +110,7 @@ class WeatherViewModel extends ChangeNotifier {
     }
   }
 
+// Weather data fetch with users current location
   void fetchWeatherDataWithLocation() async {
     _weatherViewState = WeatherViewState.loading;
     notifyListeners();
