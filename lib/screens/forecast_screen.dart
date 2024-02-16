@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_weather_app/components/coordinate_provider.dart';
+import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:provider/provider.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
@@ -34,15 +34,15 @@ class _ForecastScreenState extends State<ForecastScreen> {
     fetchWithCoords();
 
     // Runs fetchWithCoords when coordinate data changes on weather_screen
-    final coordinateProvider = context.read<CoordinateProvider>();
-    coordinateProvider.addListener(fetchWithCoords);
+    final weatherViewModel = context.read<WeatherViewModel>();
+    weatherViewModel.addListener(fetchWithCoords);
   }
 
   void fetchWithCoords() async {
-    final coordinateProvider = context.read<CoordinateProvider>();
+    final weatherViewModel = context.read<WeatherViewModel>();
 
-    double? lat = coordinateProvider.lat;
-    double? lon = coordinateProvider.lon;
+    double? lat = weatherViewModel.lat;
+    double? lon = weatherViewModel.lon;
 
     setState(() {
       weatherForecast = [];
