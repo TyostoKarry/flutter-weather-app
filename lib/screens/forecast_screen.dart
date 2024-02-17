@@ -1,20 +1,11 @@
 import "package:flutter/material.dart";
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_weather_app/components/states/loading_widget.dart';
+import 'package:flutter_weather_app/components/states/no_weather_data_widget.dart';
+import 'package:flutter_weather_app/components/states/weather_error_widget.dart';
+import 'package:flutter_weather_app/components/states/forecast_data_widget.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
+import 'package:flutter_weather_app/providers/forecast_view_model.dart';
 import 'package:provider/provider.dart';
-import "package:http/http.dart" as http;
-import "dart:convert";
-
-class ForecastData {
-  final String timestamp;
-  final String description;
-  final double temperature;
-  final double windSpeed;
-  final String icon;
-
-  ForecastData(this.timestamp, this.description, this.temperature,
-      this.windSpeed, this.icon);
-}
 
 class ForecastScreen extends StatefulWidget {
   const ForecastScreen({super.key});
@@ -24,134 +15,75 @@ class ForecastScreen extends StatefulWidget {
 }
 
 class _ForecastScreenState extends State<ForecastScreen> {
-  String? apiKey = dotenv.env['API_KEY'] ?? "";
-  late List<ForecastData> weatherForecast;
-  String cityName = "";
-
   @override
   void initState() {
     super.initState();
-    fetchWithCoords();
+    fetchForecastFromViewModel();
 
-    // Runs fetchWithCoords when coordinate data changes on weather_screen
+    // Runs fetchForecastFromViewModel when coordinate data changes from weather_screen
     final weatherViewModel = context.read<WeatherViewModel>();
-    weatherViewModel.addListener(fetchWithCoords);
+    weatherViewModel.addListener(fetchForecastFromViewModel);
   }
 
-  void fetchWithCoords() async {
+  void fetchForecastFromViewModel() async {
     final weatherViewModel = context.read<WeatherViewModel>();
 
     double? lat = weatherViewModel.lat;
     double? lon = weatherViewModel.lon;
 
-    setState(() {
-      weatherForecast = [];
-    });
-    if (lat == 0 && lon == 0) return;
-    Uri uri = Uri.parse(
-        "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey");
-    var response = await http.get(uri);
-    if (response.statusCode == 200) {
-      var weatherData = json.decode(response.body);
-      setState(() {
-        cityName = weatherData["city"]["name"];
-        weatherForecast = (weatherData["list"] as List).map((item) {
-          return ForecastData(
-            item["dt_txt"],
-            item["weather"][0]["description"],
-            item["main"]["temp"].toDouble(),
-            item["wind"]["speed"].toDouble(),
-            item["weather"][0]["icon"],
-          );
-        }).toList();
-      });
-    }
+    Provider.of<ForecastViewModel>(context, listen: false)
+        .fetchForecastWithCoordinates(lat, lon);
   }
 
   @override
   Widget build(BuildContext context) {
+    final forecastViewModel = Provider.of<ForecastViewModel>(context);
+    final weatherViewModel = Provider.of<WeatherViewModel>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          cityName,
-          style: const TextStyle(fontSize: 40, color: Colors.white),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 27, 30, 35),
-      ),
       backgroundColor: const Color.fromARGB(255, 27, 30, 35),
-      body: ListView.builder(
-        itemCount: weatherForecast.length,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 74, 120, 255),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: ListTile(
-              leading: Image.network(
-                  'https://openweathermap.org/img/wn/${weatherForecast[index].icon}@4x.png'),
-              title: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        const Icon(Icons.calendar_month, color: Colors.black),
-                        Text(
-                          "${weatherForecast[index].timestamp.substring(8, 10)}.${weatherForecast[index].timestamp.substring(5, 7)}.${weatherForecast[index].timestamp.substring(0, 4)}",
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        const Icon(Icons.schedule, color: Colors.black),
-                        Text(
-                          weatherForecast[index].timestamp.substring(11, 13),
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              subtitle: Column(
-                children: <Widget>[
-                  Text(
-                    weatherForecast[index].description,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          const Icon(Icons.thermostat, color: Colors.black),
-                          Text(
-                            "${weatherForecast[index].temperature} °C",
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          const Icon(Icons.air, color: Colors.black),
-                          Text(
-                            "${weatherForecast[index].windSpeed} m/s",
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+      body: Center(
+        child: _buildBodyBasedOnState(forecastViewModel, weatherViewModel),
       ),
     );
+  }
+
+  Widget _buildBodyBasedOnState(
+      ForecastViewModel forecastViewModel, WeatherViewModel weatherViewModel) {
+    if (forecastViewModel.state == ForecastViewState.loading ||
+        weatherViewModel.state == WeatherViewState.loading) {
+      return LoadingWidget(
+        line2Text: "forecast data.",
+      );
+    }
+
+    switch (forecastViewModel.state) {
+      case ForecastViewState.loading:
+        return LoadingWidget(
+          line2Text: "forecast data.",
+        );
+      case ForecastViewState.noForecastData:
+        return NoWeatherDataWidget(
+          line1Text: "Enter a city in Weather screen",
+          line2Text: "to see forecast data.",
+        );
+      case ForecastViewState.error:
+        return WeatherErrorWidget(
+          line2Text: "forecast data!",
+        );
+      case ForecastViewState.forecastData:
+        return forecastViewModel.forecastList.length != 0
+            ? ForecastDataWidget(
+                cityName: forecastViewModel.forecastCity,
+                forecastList: forecastViewModel.forecastList)
+            : NoWeatherDataWidget(
+                line1Text: "Enter a city in Weather screen",
+                line2Text: "to see forecast data.",
+              );
+      default:
+        return NoWeatherDataWidget(
+          line1Text: "Enter a city in Weather screen",
+          line2Text: "to see forecast data.",
+        );
+    }
   }
 }

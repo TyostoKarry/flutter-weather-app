@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
+import 'package:flutter_weather_app/providers/forecast_view_model.dart';
 import 'package:flutter_weather_app/screens/forecast_screen.dart';
 import 'package:flutter_weather_app/screens/weather_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ Future main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => WeatherViewModel()),
+        ChangeNotifierProvider(create: (_) => ForecastViewModel()),
       ],
       child: const MainApp(),
     ),

@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_weather_app/components/states/invalid_city_widget.dart';
 import 'package:flutter_weather_app/components/states/loading_widget.dart';
 import 'package:flutter_weather_app/components/states/no_weather_data_widget.dart';
@@ -17,7 +16,6 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  String? apiKey = dotenv.env['API_KEY'] ?? "";
   String cityInput = "";
 
   // Height of the displayed data container. Is changed accordingly if keyboard is opened and closed
@@ -140,19 +138,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget _buildBodyBasedOnState(WeatherViewModel weatherViewModel) {
     switch (weatherViewModel.state) {
       case WeatherViewState.loading:
-        return LoadingWidget();
+        return LoadingWidget(
+          line2Text: "weather data.",
+        );
       case WeatherViewState.noWeatherData:
-        return NoWeatherDataWidget();
+        return NoWeatherDataWidget(
+          line1Text: "Enter a city to",
+          line2Text: "see weather data.",
+        );
       case WeatherViewState.invalidCity:
         return InvalidCityWidget();
       case WeatherViewState.error:
-        return WeatherErrorWidget();
+        return WeatherErrorWidget(
+          line2Text: "weather data!",
+        );
       case WeatherViewState.weatherData:
         return weatherViewModel.weatherData != null
             ? WeatherDataWidget(weatherData: weatherViewModel.weatherData!)
-            : NoWeatherDataWidget();
+            : NoWeatherDataWidget(
+                line1Text: "Enter a city to",
+                line2Text: "see weather data.",
+              );
       default:
-        return NoWeatherDataWidget();
+        return NoWeatherDataWidget(
+          line1Text: "Enter a city to",
+          line2Text: "see weather data.",
+        );
     }
   }
 }

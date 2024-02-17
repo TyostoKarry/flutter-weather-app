@@ -2,6 +2,10 @@ import "package:flutter/material.dart";
 import 'package:auto_size_text_plus/auto_size_text.dart';
 
 class WeatherErrorWidget extends StatelessWidget {
+  final String line2Text;
+
+  WeatherErrorWidget({required this.line2Text});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,7 +17,7 @@ class WeatherErrorWidget extends StatelessWidget {
             color: const Color.fromARGB(255, 74, 120, 255),
             width: MediaQuery.of(context).size.width - 40,
             height: 300,
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Icon(
@@ -27,7 +31,7 @@ class WeatherErrorWidget extends StatelessWidget {
                   style: const TextStyle(fontSize: 30),
                 ),
                 AutoSizeText(
-                  "weather data!",
+                  line2Text,
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 30),

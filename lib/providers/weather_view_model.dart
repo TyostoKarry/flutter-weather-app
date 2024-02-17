@@ -62,9 +62,13 @@ class WeatherViewModel extends ChangeNotifier {
   // Weather data fetch with city name input
   void fetchWeatherData(cityInput) async {
     _weatherViewState = WeatherViewState.loading;
+    _lat = null;
+    _lon = null;
     notifyListeners();
     if (cityInput == "") {
       _weatherViewState = WeatherViewState.noWeatherData;
+      _lat = null;
+      _lon = null;
       notifyListeners();
       return;
     }
@@ -102,10 +106,14 @@ class WeatherViewModel extends ChangeNotifier {
         notifyListeners();
       } else {
         _weatherViewState = WeatherViewState.invalidCity;
+        _lat = null;
+        _lon = null;
         notifyListeners();
       }
     } catch (error) {
       _weatherViewState = WeatherViewState.error;
+      _lat = null;
+      _lon = null;
       notifyListeners();
     }
   }
@@ -113,6 +121,8 @@ class WeatherViewModel extends ChangeNotifier {
 // Weather data fetch with users current location
   void fetchWeatherDataWithLocation() async {
     _weatherViewState = WeatherViewState.loading;
+    _lat = null;
+    _lon = null;
     notifyListeners();
     double? latitude;
     double? longitude;
@@ -124,6 +134,8 @@ class WeatherViewModel extends ChangeNotifier {
         longitude = _formatDouble(locationData.longitude);
         if (latitude == null || longitude == null) {
           _weatherViewState = WeatherViewState.noWeatherData;
+          _lat = null;
+          _lon = null;
           notifyListeners();
           return;
         }
@@ -160,10 +172,14 @@ class WeatherViewModel extends ChangeNotifier {
           notifyListeners();
         } else {
           _weatherViewState = WeatherViewState.error;
+          _lat = null;
+          _lon = null;
           notifyListeners();
         }
       } catch (error) {
         _weatherViewState = WeatherViewState.error;
+        _lat = null;
+        _lon = null;
         notifyListeners();
       }
     }
