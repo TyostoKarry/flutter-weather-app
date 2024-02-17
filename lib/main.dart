@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:flutter_weather_app/providers/forecast_view_model.dart';
 import 'package:flutter_weather_app/screens/forecast_screen.dart';
@@ -53,8 +54,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
             },
           );
         },
-        indicatorColor: const Color.fromARGB(255, 74, 120, 255),
-        backgroundColor: const Color.fromARGB(255, 27, 30, 35),
+        indicatorColor: AppColors.appComponentColor,
+        backgroundColor: AppColors.appBottomNavBarColor,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(

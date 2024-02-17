@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:auto_size_text_plus/auto_size_text.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 
 class InvalidCityWidget extends StatelessWidget {
   @override
@@ -10,7 +11,7 @@ class InvalidCityWidget extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(40),
           child: Container(
-            color: const Color.fromARGB(255, 74, 120, 255),
+            color: AppColors.appComponentColor,
             width: MediaQuery.of(context).size.width - 40,
             height: 300,
             child: Padding(

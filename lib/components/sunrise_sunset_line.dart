@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 
 class SunriseSunsetLine extends StatefulWidget {
   final DateTime sunriseTime;
@@ -59,14 +60,14 @@ class _SunriseSunsetLineState extends State<SunriseSunsetLine> {
                   child: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 74, 120, 255),
+                      color: AppColors.appComponentColor,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(2),
                       child: Icon(
                         Icons.wb_sunny,
                         size: 30,
-                        color: Colors.black,
+                        color: AppColors.appTextAndIconColor,
                       ),
                     ),
                   ),
@@ -78,14 +79,14 @@ class _SunriseSunsetLineState extends State<SunriseSunsetLine> {
                   child: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 74, 120, 255),
+                      color: AppColors.appComponentColor,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(2),
                       child: Icon(
                         Icons.dark_mode,
                         size: 30,
-                        color: Colors.black,
+                        color: AppColors.appTextAndIconColor,
                       ),
                     ),
                   ),
@@ -101,7 +102,7 @@ class SunriseSunsetLineDraw extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint linePaint = Paint()
-      ..color = Colors.black
+      ..color = AppColors.appTextAndIconColor
       ..strokeWidth = 3;
 
     canvas.drawLine(Offset(0, size.height / 2),

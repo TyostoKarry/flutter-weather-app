@@ -3,6 +3,7 @@ import "package:flutter_weather_app/components/weather_data_block.dart";
 import 'package:flutter_weather_app/components/sunrise_sunset_line.dart';
 import "package:flutter_weather_app/providers/weather_view_model.dart";
 import 'package:auto_size_text_plus/auto_size_text.dart';
+import "package:flutter_weather_app/theme/app_colors.dart";
 
 class WeatherDataWidget extends StatelessWidget {
   final WeatherData weatherData;
@@ -20,7 +21,7 @@ class WeatherDataWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              color: const Color.fromARGB(255, 74, 120, 255),
+              color: AppColors.appComponentColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -65,21 +66,21 @@ class WeatherDataWidget extends StatelessWidget {
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.thermostat,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Feels like",
                   state: "${weatherData.feelsLike} °C"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.air,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Wind speed",
                   state: "${weatherData.windSpeed} m/s"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.cloud_outlined,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Cloudiness",
                   state: "${weatherData.cloudyness} %"),
@@ -95,21 +96,21 @@ class WeatherDataWidget extends StatelessWidget {
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.compress,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Pressure",
                   state: "${weatherData.pressure} hPa"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.water_drop_outlined,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Humidity",
                   state: "${weatherData.humidity} %"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.visibility_outlined,
-                    color: Colors.black,
+                    color: AppColors.appTextAndIconColor,
                   ),
                   description: "Visibility",
                   state: "${weatherData.visibility} m"),
@@ -124,7 +125,7 @@ class WeatherDataWidget extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Container(
-                color: const Color.fromARGB(255, 74, 120, 255),
+                color: AppColors.appComponentColor,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -165,7 +166,7 @@ class WeatherDataWidget extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Container(
-                color: const Color.fromARGB(255, 74, 120, 255),
+                color: AppColors.appComponentColor,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -204,7 +205,7 @@ class WeatherDataWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              color: const Color.fromARGB(255, 74, 120, 255),
+              color: AppColors.appComponentColor,
               child: Column(
                 children: <Widget>[
                   const SizedBox(height: 20),

@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter_weather_app/providers/forecast_view_model.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 
 class ForecastDataWidget extends StatelessWidget {
   final String? cityName;
@@ -16,16 +17,16 @@ class ForecastDataWidget extends StatelessWidget {
           style: const TextStyle(fontSize: 40, color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 27, 30, 35),
+        backgroundColor: AppColors.appBackgroundColor,
       ),
-      backgroundColor: const Color.fromARGB(255, 27, 30, 35),
+      backgroundColor: AppColors.appBackgroundColor,
       body: ListView.builder(
         itemCount: forecastList.length,
         itemBuilder: (context, index) {
           return Container(
             margin: const EdgeInsets.fromLTRB(20, 8, 20, 8),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 74, 120, 255),
+              color: AppColors.appComponentColor,
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(
@@ -37,19 +38,23 @@ class ForecastDataWidget extends StatelessWidget {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        const Icon(Icons.calendar_month, color: Colors.black),
+                        const Icon(Icons.calendar_month,
+                            color: AppColors.appTextAndIconColor),
                         Text(
                           "${forecastList[index].timestamp.substring(8, 10)}.${forecastList[index].timestamp.substring(5, 7)}.${forecastList[index].timestamp.substring(0, 4)}",
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(
+                              color: AppColors.appTextAndIconColor),
                         ),
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        const Icon(Icons.schedule, color: Colors.black),
+                        const Icon(Icons.schedule,
+                            color: AppColors.appTextAndIconColor),
                         Text(
                           forecastList[index].timestamp.substring(11, 13),
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(
+                              color: AppColors.appTextAndIconColor),
                         ),
                       ],
                     ),
@@ -60,26 +65,31 @@ class ForecastDataWidget extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     forecastList[index].description,
-                    style: const TextStyle(color: Colors.black),
+                    style:
+                        const TextStyle(color: AppColors.appTextAndIconColor),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          const Icon(Icons.thermostat, color: Colors.black),
+                          const Icon(Icons.thermostat,
+                              color: AppColors.appTextAndIconColor),
                           Text(
                             "${forecastList[index].temperature} °C",
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(
+                                color: AppColors.appTextAndIconColor),
                           ),
                         ],
                       ),
                       Row(
                         children: <Widget>[
-                          const Icon(Icons.air, color: Colors.black),
+                          const Icon(Icons.air,
+                              color: AppColors.appTextAndIconColor),
                           Text(
                             "${forecastList[index].windSpeed} m/s",
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(
+                                color: AppColors.appTextAndIconColor),
                           ),
                         ],
                       ),

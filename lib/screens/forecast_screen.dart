@@ -5,6 +5,7 @@ import 'package:flutter_weather_app/components/states/weather_error_widget.dart'
 import 'package:flutter_weather_app/components/states/forecast_data_widget.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:flutter_weather_app/providers/forecast_view_model.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 import 'package:provider/provider.dart';
 
 class ForecastScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
     final forecastViewModel = Provider.of<ForecastViewModel>(context);
     final weatherViewModel = Provider.of<WeatherViewModel>(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 27, 30, 35),
+      backgroundColor: AppColors.appBackgroundColor,
       body: Center(
         child: _buildBodyBasedOnState(forecastViewModel, weatherViewModel),
       ),

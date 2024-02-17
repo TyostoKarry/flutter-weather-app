@@ -5,6 +5,7 @@ import 'package:flutter_weather_app/components/states/no_weather_data_widget.dar
 import 'package:flutter_weather_app/components/states/weather_error_widget.dart';
 import 'package:flutter_weather_app/components/states/weather_data_widget.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
+import 'package:flutter_weather_app/theme/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -53,7 +54,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget build(BuildContext context) {
     final weatherViewModel = Provider.of<WeatherViewModel>(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 27, 30, 35),
+      backgroundColor: AppColors.appBackgroundColor,
       body: Column(
         children: <Widget>[
           AnimatedContainer(
@@ -72,7 +73,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
-                      cursorColor: const Color.fromARGB(255, 74, 120, 255),
+                      cursorColor: AppColors.appComponentColor,
                       decoration: const InputDecoration(
                         labelText: "Enter City",
                         labelStyle: TextStyle(color: Colors.white),
@@ -95,8 +96,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(
                                   MediaQuery.of(context).size.width - 130, 60),
-                              backgroundColor:
-                                  const Color.fromARGB(255, 74, 120, 255)),
+                              backgroundColor: AppColors.appComponentColor),
                           onPressed: () {
                             Provider.of<WeatherViewModel>(context,
                                     listen: false)
@@ -104,15 +104,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           },
                           child: const Text(
                             "Fetch Weather",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: AppColors.appTextAndIconColor),
                           ),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(80, 60),
-                                backgroundColor:
-                                    const Color.fromARGB(255, 74, 120, 255)),
+                                backgroundColor: AppColors.appComponentColor),
                             onPressed: () {
                               Provider.of<WeatherViewModel>(context,
                                       listen: false)
@@ -120,7 +121,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             },
                             child: const Icon(
                               Icons.location_on,
-                              color: Colors.black,
+                              color: AppColors.appTextAndIconColor,
                             )),
                       ],
                     ),

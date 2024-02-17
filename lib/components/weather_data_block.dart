@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_weather_app/theme/app_colors.dart";
 
 class WeatherDataBlock extends StatelessWidget {
   final Icon myIcon;
@@ -17,7 +18,7 @@ class WeatherDataBlock extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 74, 120, 255),
+        color: AppColors.appComponentColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -26,12 +27,14 @@ class WeatherDataBlock extends StatelessWidget {
           myIcon,
           Text(
             description,
-            style: const TextStyle(fontSize: 13, color: Colors.black),
+            style: const TextStyle(
+                fontSize: 13, color: AppColors.appTextAndIconColor),
           ),
           const SizedBox(width: 10),
           Text(
             state,
-            style: const TextStyle(fontSize: 18, color: Colors.black),
+            style: const TextStyle(
+                fontSize: 18, color: AppColors.appTextAndIconColor),
           ),
         ],
       ),
