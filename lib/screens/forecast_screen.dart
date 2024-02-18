@@ -32,8 +32,11 @@ class _ForecastScreenState extends State<ForecastScreen> {
     double? lat = weatherViewModel.lat;
     double? lon = weatherViewModel.lon;
 
-    Provider.of<ForecastViewModel>(context, listen: false)
-        .fetchForecastWithCoordinates(lat, lon);
+    // Initial fetch after initial build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ForecastViewModel>(context, listen: false)
+          .fetchForecastWithCoordinates(lat, lon);
+    });
   }
 
   @override

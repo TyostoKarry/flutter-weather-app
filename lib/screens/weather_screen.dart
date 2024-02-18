@@ -45,9 +45,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
       }
     });
 
-    // Gets weatherData of current location and displays it on screen on startup
-    Provider.of<WeatherViewModel>(context, listen: false)
-        .fetchWeatherDataWithLocation();
+    // Initial fetch after initial build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<WeatherViewModel>(context, listen: false)
+          .fetchWeatherDataWithLocation();
+    });
   }
 
   @override
