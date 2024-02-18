@@ -26,19 +26,22 @@ class NoWeatherDataWidget extends StatelessWidget {
                 children: <Widget>[
                   Icon(
                     Icons.cloud_outlined,
+                    color: AppColors.appTextAndIconColor,
                     size: 200,
                   ),
                   AutoSizeText(
                     line1Text,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                   AutoSizeText(
                     line2Text,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                 ],
               ),

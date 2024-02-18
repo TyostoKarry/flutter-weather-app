@@ -17,6 +17,7 @@ class ForecastData {
   double temperature = 0;
   double windSpeed = 0;
   String icon = "";
+  int rainProbability = 0;
   double? rainAmount;
   double? snowAmount;
 
@@ -26,6 +27,7 @@ class ForecastData {
       required this.temperature,
       required this.windSpeed,
       required this.icon,
+      required this.rainProbability,
       this.rainAmount,
       this.snowAmount});
 }
@@ -75,6 +77,7 @@ class ForecastViewModel extends ChangeNotifier {
               temperature: item["main"]["temp"].toDouble(),
               windSpeed: item["wind"]["speed"].toDouble(),
               icon: item["weather"][0]["icon"],
+              rainProbability: (item["pop"].toDouble() * 100).round(),
               rainAmount: rainAmount,
               snowAmount: snowAmount);
         }).toList();

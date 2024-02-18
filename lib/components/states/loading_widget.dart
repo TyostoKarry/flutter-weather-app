@@ -34,13 +34,15 @@ class LoadingWidget extends StatelessWidget {
                     "Loading",
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                   AutoSizeText(
                     line2Text,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                   SizedBox(height: 10)
                 ],

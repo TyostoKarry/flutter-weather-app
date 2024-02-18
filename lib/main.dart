@@ -46,27 +46,52 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(
-            () {
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelTextStyle:
+              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            // Check if the destination is selected
+            if (states.contains(MaterialState.selected)) {
+              return TextStyle(
+                  color: AppColors
+                      .appNavBarTextAndIconColorSelected); // Color for selected state
+            }
+            return TextStyle(
+                color: AppColors
+                    .appNavBarTextAndIconColorUnselected); // Color for unselected state
+          }),
+          iconTheme:
+              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return IconThemeData(
+                  color: AppColors
+                      .appNavBarTextAndIconColorSelected); // Icon color for selected state
+            }
+            return IconThemeData(
+                color: AppColors
+                    .appNavBarTextAndIconColorUnselected); // Icon color for unselected state
+          }),
+        ),
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
               currentPageIndex = index;
-            },
-          );
-        },
-        indicatorColor: AppColors.appComponentColor,
-        backgroundColor: AppColors.appBottomNavBarColor,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.sunny),
-            label: 'Weather',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.list),
-            label: 'Forecast',
-          ),
-        ],
+            });
+          },
+          indicatorColor: AppColors.appNavBarSelectedIndicatorColor,
+          backgroundColor: AppColors.appBottomNavBarColor,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              icon: Icon(Icons.sunny),
+              label: 'Weather',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.list),
+              label: 'Forecast',
+            ),
+          ],
+        ),
       ),
       body: IndexedStack(
         index: currentPageIndex,

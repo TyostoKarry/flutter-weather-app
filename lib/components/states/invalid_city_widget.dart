@@ -21,19 +21,22 @@ class InvalidCityWidget extends StatelessWidget {
                 children: <Widget>[
                   Icon(
                     Icons.location_city,
+                    color: AppColors.appTextAndIconColor,
                     size: 200,
                   ),
                   AutoSizeText(
                     "Entered city does not exist.",
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                   AutoSizeText(
                     "Please enter valid city input.",
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(
+                        color: AppColors.appTextAndIconColor, fontSize: 30),
                   ),
                 ],
               ),

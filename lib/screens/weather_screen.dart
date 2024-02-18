@@ -96,7 +96,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(
                                   MediaQuery.of(context).size.width - 130, 60),
-                              backgroundColor: AppColors.appComponentColor),
+                              backgroundColor:
+                                  AppColors.appClicableButtonColor),
                           onPressed: () {
                             Provider.of<WeatherViewModel>(context,
                                     listen: false)
@@ -106,14 +107,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             "Fetch Weather",
                             style: TextStyle(
                                 fontSize: 15,
-                                color: AppColors.appTextAndIconColor),
+                                color: AppColors
+                                    .appClickableButtonTextAndIconColor),
                           ),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(80, 60),
-                                backgroundColor: AppColors.appComponentColor),
+                                backgroundColor:
+                                    AppColors.appClicableButtonColor),
                             onPressed: () {
                               Provider.of<WeatherViewModel>(context,
                                       listen: false)
@@ -121,7 +124,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             },
                             child: const Icon(
                               Icons.location_on,
-                              color: AppColors.appTextAndIconColor,
+                              color:
+                                  AppColors.appClickableButtonTextAndIconColor,
                             )),
                       ],
                     ),
