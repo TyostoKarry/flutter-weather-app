@@ -78,12 +78,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       cursorColor: AppColors.appComponentColor,
                       decoration: const InputDecoration(
                         labelText: "Enter City",
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle:
+                            TextStyle(color: AppColors.appTextFieldColor),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide:
+                              BorderSide(color: AppColors.appTextFieldColor),
                         ),
                       ),
-                      style: const TextStyle(color: Colors.white),
+                      style:
+                          const TextStyle(color: AppColors.appTextFieldColor),
                       onChanged: (value) {
                         cityInput = value;
                       },

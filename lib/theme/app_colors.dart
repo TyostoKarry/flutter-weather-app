@@ -11,6 +11,7 @@ class AppColors {
   // Text and icon colors
   static const Color appTextAndIconColor = Colors.black;
   static const Color appClickableButtonTextAndIconColor = Colors.black;
+  static const Color appTextFieldColor = Colors.white;
   static const Color appNavBarTextAndIconColorSelected = Colors.white;
   static const Color appNavBarTextAndIconColorUnselected = Colors.grey;
 }
