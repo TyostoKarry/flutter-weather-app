@@ -60,7 +60,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       body: Column(
         children: <Widget>[
           AnimatedContainer(
-            duration: const Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 25),
             height: MediaQuery.of(context).size.height - 250 - keyboardSize,
             child: SingleChildScrollView(
               child: _buildBodyBasedOnState(weatherViewModel),
