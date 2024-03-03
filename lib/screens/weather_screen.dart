@@ -21,6 +21,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   // Height of the displayed data container. Is changed accordingly if keyboard is opened and closed
   double keyboardSize = 0;
+  // Speed of the container size change. Avoid widget collision.
+  int animationSpeed = 0;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         // Keyboard closed, delay the animation to not overlap with closing keyboard
         Future.delayed(const Duration(milliseconds: 50), () {
           setState(() {
+            animationSpeed = 100;
             keyboardSize = 0;
           });
         });
@@ -40,6 +43,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       if (visible) {
         // Keyboard opened, instant animation to not overlap with keyboard opening
         setState(() {
+          animationSpeed = 25;
           keyboardSize = 200;
         });
       }
@@ -60,7 +64,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       body: Column(
         children: <Widget>[
           AnimatedContainer(
-            duration: const Duration(milliseconds: 25),
+            duration: Duration(milliseconds: animationSpeed),
             height: MediaQuery.of(context).size.height - 250 - keyboardSize,
             child: SingleChildScrollView(
               child: _buildBodyBasedOnState(weatherViewModel),
