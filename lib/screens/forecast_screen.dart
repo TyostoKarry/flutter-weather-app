@@ -59,6 +59,12 @@ class _ForecastScreenState extends State<ForecastScreen> {
         line2Text: "forecast data.",
       );
     }
+    if (forecastViewModel.state == ForecastViewState.error ||
+        weatherViewModel.state == WeatherViewState.error) {
+      return WeatherErrorWidget(
+        line2Text: "forecast data!",
+      );
+    }
 
     switch (forecastViewModel.state) {
       case ForecastViewState.loading:
