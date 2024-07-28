@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
+import 'package:flutter_weather_app/components/states/info_panel_widget.dart';
 import 'package:flutter_weather_app/components/states/loading_widget.dart';
-import 'package:flutter_weather_app/components/states/no_weather_data_widget.dart';
-import 'package:flutter_weather_app/components/states/weather_error_widget.dart';
 import 'package:flutter_weather_app/components/states/forecast_data_widget.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:flutter_weather_app/providers/forecast_view_model.dart';
@@ -61,7 +60,9 @@ class _ForecastScreenState extends State<ForecastScreen> {
     }
     if (forecastViewModel.state == ForecastViewState.error ||
         weatherViewModel.state == WeatherViewState.error) {
-      return WeatherErrorWidget(
+      return InfoPanelWidget(
+        icon: Icons.error_outline,
+        line1Text: "Error while loading",
         line2Text: "forecast data!",
       );
     }
@@ -72,25 +73,36 @@ class _ForecastScreenState extends State<ForecastScreen> {
           line2Text: "forecast data.",
         );
       case ForecastViewState.noForecastData:
-        return NoWeatherDataWidget(
+        return InfoPanelWidget(
+          icon: Icons.cloud_outlined,
           line1Text: "Enter a city in Weather screen",
           line2Text: "to see forecast data.",
         );
       case ForecastViewState.error:
-        return WeatherErrorWidget(
+        return InfoPanelWidget(
+          icon: Icons.error_outline,
+          line1Text: "Error while loading",
           line2Text: "forecast data!",
+        );
+      case ForecastViewState.apiKeyError:
+        return InfoPanelWidget(
+          icon: Icons.key_off_outlined,
+          line1Text: "Invalid API key!",
+          line2Text: "Provide valid API key in settings",
         );
       case ForecastViewState.forecastData:
         return forecastViewModel.forecastList.length != 0
             ? ForecastDataWidget(
                 cityName: forecastViewModel.forecastCity,
                 forecastList: forecastViewModel.forecastList)
-            : NoWeatherDataWidget(
+            : InfoPanelWidget(
+                icon: Icons.cloud_outlined,
                 line1Text: "Enter a city in Weather screen",
                 line2Text: "to see forecast data.",
               );
       default:
-        return NoWeatherDataWidget(
+        return InfoPanelWidget(
+          icon: Icons.cloud_outlined,
           line1Text: "Enter a city in Weather screen",
           line2Text: "to see forecast data.",
         );

@@ -2,11 +2,13 @@ import "package:flutter/material.dart";
 import 'package:auto_size_text_plus/auto_size_text.dart';
 import 'package:flutter_weather_app/theme/app_colors.dart';
 
-class NoWeatherDataWidget extends StatelessWidget {
+class InfoPanelWidget extends StatelessWidget {
+  final IconData icon;
   final String line1Text;
   final String line2Text;
 
-  NoWeatherDataWidget({required this.line1Text, required this.line2Text});
+  InfoPanelWidget(
+      {required this.icon, required this.line1Text, required this.line2Text});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class NoWeatherDataWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
-                    Icons.cloud_outlined,
+                    icon,
                     color: AppColors.appTextAndIconColor,
                     size: 200,
                   ),

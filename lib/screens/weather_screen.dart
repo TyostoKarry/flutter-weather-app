@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
-import 'package:flutter_weather_app/components/states/invalid_city_widget.dart';
+import 'package:flutter_weather_app/components/states/info_panel_widget.dart';
 import 'package:flutter_weather_app/components/states/loading_widget.dart';
-import 'package:flutter_weather_app/components/states/no_weather_data_widget.dart';
-import 'package:flutter_weather_app/components/states/weather_error_widget.dart';
 import 'package:flutter_weather_app/components/states/weather_data_widget.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:flutter_weather_app/theme/app_colors.dart';
@@ -156,25 +154,40 @@ class _WeatherScreenState extends State<WeatherScreen> {
           line2Text: "weather data.",
         );
       case WeatherViewState.noWeatherData:
-        return NoWeatherDataWidget(
+        return InfoPanelWidget(
+          icon: Icons.cloud_outlined,
           line1Text: "Enter a city to",
           line2Text: "see weather data.",
         );
       case WeatherViewState.invalidCity:
-        return InvalidCityWidget();
+        return InfoPanelWidget(
+          icon: Icons.location_city,
+          line1Text: "Entered city does not exist.",
+          line2Text: "Please enter valid city input.",
+        );
       case WeatherViewState.error:
-        return WeatherErrorWidget(
+        return InfoPanelWidget(
+          icon: Icons.error_outline,
+          line1Text: "Error while loading",
           line2Text: "weather data!",
+        );
+      case WeatherViewState.apiKeyError:
+        return InfoPanelWidget(
+          icon: Icons.key_off_outlined,
+          line1Text: "Invalid API key!",
+          line2Text: "Provide valid API key in settings",
         );
       case WeatherViewState.weatherData:
         return weatherViewModel.weatherData != null
             ? WeatherDataWidget(weatherData: weatherViewModel.weatherData!)
-            : NoWeatherDataWidget(
+            : InfoPanelWidget(
+                icon: Icons.cloud_outlined,
                 line1Text: "Enter a city to",
                 line2Text: "see weather data.",
               );
       default:
-        return NoWeatherDataWidget(
+        return InfoPanelWidget(
+          icon: Icons.cloud_outlined,
           line1Text: "Enter a city to",
           line2Text: "see weather data.",
         );

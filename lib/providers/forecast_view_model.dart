@@ -7,6 +7,7 @@ import "package:shared_preferences/shared_preferences.dart";
 // All the possible states of forecast_screen
 enum ForecastViewState {
   error,
+  apiKeyError,
   loading,
   noForecastData,
   forecastData,
@@ -56,23 +57,23 @@ class ForecastViewModel extends ChangeNotifier {
   void fetchForecastWithCoordinates(double? lat, double? lon) async {
     await _loadApiKey();
     if (apiKey == null || apiKey!.isEmpty) {
-      _forecastViewState = ForecastViewState.error;
+      _forecastViewState = ForecastViewState.apiKeyError;
       notifyListeners();
       return;
     }
     _forecastViewState = ForecastViewState.loading;
-    notifyListeners();
-    if ((lat == 0 && lon == 0) || (lat == null || lon == null)) {
-      _forecastViewState = ForecastViewState.noForecastData;
-      notifyListeners();
-      return;
-    }
     try {
       Uri uri = Uri.parse(
           "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey");
       var response = await http.get(uri);
       if (response.statusCode == 401) {
-        _forecastViewState = ForecastViewState.error;
+        _forecastViewState = ForecastViewState.apiKeyError;
+        notifyListeners();
+        return;
+      }
+      notifyListeners();
+      if ((lat == 0 && lon == 0) || (lat == null || lon == null)) {
+        _forecastViewState = ForecastViewState.noForecastData;
         notifyListeners();
         return;
       }

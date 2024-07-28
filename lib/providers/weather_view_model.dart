@@ -8,6 +8,7 @@ import "package:shared_preferences/shared_preferences.dart";
 // All the possible states of weather_screen
 enum WeatherViewState {
   error,
+  apiKeyError,
   invalidCity,
   loading,
   noWeatherData,
@@ -73,7 +74,7 @@ class WeatherViewModel extends ChangeNotifier {
   void fetchWeatherData(cityInput) async {
     await _loadApiKey();
     if (apiKey == null || apiKey!.isEmpty) {
-      _weatherViewState = WeatherViewState.error;
+      _weatherViewState = WeatherViewState.apiKeyError;
       notifyListeners();
       return;
     }
@@ -86,7 +87,7 @@ class WeatherViewModel extends ChangeNotifier {
           "https://api.openweathermap.org/data/2.5/weather?q=$cityInput&units=metric&appid=$apiKey");
       var response = await http.get(uri);
       if (response.statusCode == 401) {
-        _weatherViewState = WeatherViewState.error;
+        _weatherViewState = WeatherViewState.apiKeyError;
         notifyListeners();
         return;
       }
@@ -143,7 +144,7 @@ class WeatherViewModel extends ChangeNotifier {
   void fetchWeatherDataWithLocation() async {
     await _loadApiKey();
     if (apiKey == null || apiKey!.isEmpty) {
-      _weatherViewState = WeatherViewState.error;
+      _weatherViewState = WeatherViewState.apiKeyError;
       notifyListeners();
       return;
     }
@@ -170,7 +171,7 @@ class WeatherViewModel extends ChangeNotifier {
             "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKey");
         var response = await http.get(uri);
         if (response.statusCode == 401) {
-          _weatherViewState = WeatherViewState.error;
+          _weatherViewState = WeatherViewState.apiKeyError;
           notifyListeners();
           return;
         }
