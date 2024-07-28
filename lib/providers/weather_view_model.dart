@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
+import "package:shared_preferences/shared_preferences.dart";
 
 // All the possible states of weather_screen
 enum WeatherViewState {
   error,
+  apiKeyError,
   invalidCity,
   loading,
   noWeatherData,
@@ -48,34 +49,89 @@ class WeatherData {
 }
 
 class WeatherViewModel extends ChangeNotifier {
-  String? apiKey = dotenv.env['API_KEY'] ?? "";
+  String? apiKey;
+  bool useMetricUnits = true;
+  String? unitType;
   WeatherViewState _weatherViewState = WeatherViewState.loading;
   WeatherData? _weatherData;
   double? _lat = 0;
   double? _lon = 0;
+  bool autoSearchLocationOnLaunch = false;
+  bool autoSearchCityOnLaunch = false;
+  String autoSearchCity = "";
+
+  WeatherViewModel() {
+    _loadApiKeyAndUnitType();
+    _loadPreferences();
+  }
 
   WeatherViewState get state => _weatherViewState;
   WeatherData? get weatherData => _weatherData;
   double? get lat => _lat;
   double? get lon => _lon;
 
+  Future<void> _loadApiKeyAndUnitType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    apiKey = prefs.getString('api_key') ?? "";
+    useMetricUnits = prefs.getBool('use_metric_units') ?? true;
+    if (useMetricUnits) {
+      unitType = "metric";
+    } else {
+      unitType = "imperial";
+    }
+    notifyListeners();
+  }
+
+  Future<void> _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    autoSearchLocationOnLaunch =
+        prefs.getBool('auto_search_location_on_launch') ?? false;
+    autoSearchCityOnLaunch =
+        prefs.getBool('auto_search_city_on_launch') ?? false;
+    autoSearchCity = prefs.getString('auto_search_city') ?? "";
+
+    if (autoSearchLocationOnLaunch) {
+      fetchWeatherDataWithLocation();
+    } else if (autoSearchCityOnLaunch) {
+      fetchWeatherData(autoSearchCity);
+    } else {
+      _weatherViewState = WeatherViewState.noWeatherData;
+      notifyListeners();
+    }
+  }
+
+  String get temperatureUnit => useMetricUnits ? "°C" : "°F";
+  String get windUnit => useMetricUnits ? "m/s" : "mph";
+  String get visibilityUnit => useMetricUnits ? "m" : "mi";
+
   // Weather data fetch with city name input
   void fetchWeatherData(cityInput) async {
+    await _loadApiKeyAndUnitType();
+    if (apiKey == null || apiKey!.isEmpty) {
+      _weatherViewState = WeatherViewState.apiKeyError;
+      notifyListeners();
+      return;
+    }
     _weatherViewState = WeatherViewState.loading;
     _lat = null;
     _lon = null;
     notifyListeners();
-    if (cityInput == "") {
-      _weatherViewState = WeatherViewState.noWeatherData;
-      _lat = null;
-      _lon = null;
-      notifyListeners();
-      return;
-    }
     try {
       Uri uri = Uri.parse(
-          "https://api.openweathermap.org/data/2.5/weather?q=$cityInput&units=metric&appid=$apiKey");
+          "https://api.openweathermap.org/data/2.5/weather?q=$cityInput&units=$unitType&appid=$apiKey");
       var response = await http.get(uri);
+      if (response.statusCode == 401) {
+        _weatherViewState = WeatherViewState.apiKeyError;
+        notifyListeners();
+        return;
+      }
+      if (cityInput == "") {
+        _weatherViewState = WeatherViewState.noWeatherData;
+        _lat = null;
+        _lon = null;
+        notifyListeners();
+        return;
+      }
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         _weatherData = WeatherData(
@@ -120,6 +176,12 @@ class WeatherViewModel extends ChangeNotifier {
 
 // Weather data fetch with users current location
   void fetchWeatherDataWithLocation() async {
+    await _loadApiKeyAndUnitType();
+    if (apiKey == null || apiKey!.isEmpty) {
+      _weatherViewState = WeatherViewState.apiKeyError;
+      notifyListeners();
+      return;
+    }
     _weatherViewState = WeatherViewState.loading;
     _lat = null;
     _lon = null;
@@ -140,8 +202,13 @@ class WeatherViewModel extends ChangeNotifier {
           return;
         }
         Uri uri = Uri.parse(
-            "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKey");
+            "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=$unitType&appid=$apiKey");
         var response = await http.get(uri);
+        if (response.statusCode == 401) {
+          _weatherViewState = WeatherViewState.apiKeyError;
+          notifyListeners();
+          return;
+        }
         if (response.statusCode == 200) {
           var data = json.decode(response.body);
           _weatherData = WeatherData(

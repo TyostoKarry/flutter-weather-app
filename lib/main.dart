@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_weather_app/screens/settings_screen.dart';
 import 'package:flutter_weather_app/theme/app_colors.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
 import 'package:flutter_weather_app/providers/forecast_view_model.dart';
@@ -8,9 +8,6 @@ import 'package:flutter_weather_app/screens/weather_screen.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
-  // Load the environment variables from the .env file
-  await dotenv.load(fileName: ".env");
-
   runApp(
     MultiProvider(
       providers: [
@@ -41,7 +38,7 @@ class MyNavigationBar extends StatefulWidget {
 }
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +80,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           selectedIndex: currentPageIndex,
           destinations: const <Widget>[
             NavigationDestination(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+            NavigationDestination(
               icon: Icon(Icons.sunny),
               label: 'Weather',
             ),
@@ -96,6 +97,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       body: IndexedStack(
         index: currentPageIndex,
         children: const [
+          SettingsScreen(),
           WeatherScreen(),
           ForecastScreen(),
         ],
