@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_weather_app/screens/settings_screen.dart';
 import 'package:flutter_weather_app/theme/app_colors.dart';
 import 'package:flutter_weather_app/providers/weather_view_model.dart';
@@ -9,9 +8,6 @@ import 'package:flutter_weather_app/screens/weather_screen.dart';
 import 'package:provider/provider.dart';
 
 Future main() async {
-  // Load the environment variables from the .env file
-  await dotenv.load(fileName: ".env");
-
   runApp(
     MultiProvider(
       providers: [

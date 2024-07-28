@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
+
+import "package:shared_preferences/shared_preferences.dart";
 
 // All the possible states of forecast_screen
 enum ForecastViewState {
@@ -33,16 +34,32 @@ class ForecastData {
 }
 
 class ForecastViewModel extends ChangeNotifier {
-  String? apiKey = dotenv.env['API_KEY'] ?? "";
+  String? apiKey;
   ForecastViewState _forecastViewState = ForecastViewState.loading;
   String? _forecastCity;
   List<ForecastData> _forecastList = [];
+
+  ForecastViewModel() {
+    _loadApiKey();
+  }
 
   ForecastViewState get state => _forecastViewState;
   String? get forecastCity => _forecastCity;
   List<ForecastData> get forecastList => _forecastList;
 
+  Future<void> _loadApiKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    apiKey = prefs.getString('api_key') ?? "";
+    notifyListeners();
+  }
+
   void fetchForecastWithCoordinates(double? lat, double? lon) async {
+    await _loadApiKey();
+    if (apiKey == null || apiKey!.isEmpty) {
+      _forecastViewState = ForecastViewState.error;
+      notifyListeners();
+      return;
+    }
     _forecastViewState = ForecastViewState.loading;
     notifyListeners();
     if ((lat == 0 && lon == 0) || (lat == null || lon == null)) {
@@ -54,6 +71,11 @@ class ForecastViewModel extends ChangeNotifier {
       Uri uri = Uri.parse(
           "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey");
       var response = await http.get(uri);
+      if (response.statusCode == 401) {
+        _forecastViewState = ForecastViewState.error;
+        notifyListeners();
+        return;
+      }
       if (response.statusCode == 200) {
         var weatherData = json.decode(response.body);
         _forecastCity = weatherData["city"]["name"];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_app/theme/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,7 +10,31 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String apiKey = "";
+  TextEditingController _apiKeyController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadApiKey();
+  }
+
+  _loadApiKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String apiKey = prefs.getString('api_key') ?? "";
+    setState(() {
+      _apiKeyController.text = apiKey;
+    });
+  }
+
+  _saveApiKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('api_key', _apiKeyController.text);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("API key Saved"),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +54,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: <Widget>[
             const SizedBox(height: 60),
             TextField(
+              controller: _apiKeyController,
               cursorColor: AppColors.appComponentColor,
               decoration: const InputDecoration(
-                labelText: "OpenWeatherApi apiKey",
+                labelText: "OpenWeatherMap apiKey",
                 labelStyle: TextStyle(color: AppColors.appTextFieldColor),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: AppColors.appTextFieldColor),
                 ),
               ),
               style: const TextStyle(color: AppColors.appTextFieldColor),
-              onChanged: (value) {
-                apiKey = value;
-              },
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -49,9 +72,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.appClicableButtonColor),
-                onPressed: () {},
+                onPressed: _saveApiKey,
                 child: const Text(
-                  "Apply apiKey",
+                  "Apply API Key",
                   style: TextStyle(
                       fontSize: 15,
                       color: AppColors.appClickableButtonTextAndIconColor),
