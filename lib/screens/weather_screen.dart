@@ -77,7 +77,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
-                      cursorColor: AppColors.appComponentColor,
+                      cursorColor: AppColors.appTextFieldColor,
                       decoration: const InputDecoration(
                         labelText: "Enter City",
                         labelStyle:

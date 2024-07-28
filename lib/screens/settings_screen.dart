@@ -11,6 +11,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   TextEditingController _apiKeyController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   void initState() {
@@ -36,6 +37,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _toggleVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,14 +62,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 60),
             TextField(
               controller: _apiKeyController,
-              cursorColor: AppColors.appComponentColor,
-              decoration: const InputDecoration(
-                labelText: "OpenWeatherMap apiKey",
-                labelStyle: TextStyle(color: AppColors.appTextFieldColor),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.appTextFieldColor),
-                ),
-              ),
+              obscureText: _obscureText,
+              cursorColor: AppColors.appTextFieldColor,
+              decoration: InputDecoration(
+                  labelText: "OpenWeatherMap apiKey",
+                  labelStyle: TextStyle(color: AppColors.appTextFieldColor),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.appTextFieldColor),
+                  ),
+                  suffixIcon: IconButton(
+                      onPressed: _toggleVisibility,
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.appTextFieldColor,
+                      ))),
               style: const TextStyle(color: AppColors.appTextFieldColor),
             ),
             const SizedBox(height: 20),
