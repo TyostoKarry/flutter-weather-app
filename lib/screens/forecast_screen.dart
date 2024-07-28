@@ -94,7 +94,10 @@ class _ForecastScreenState extends State<ForecastScreen> {
         return forecastViewModel.forecastList.length != 0
             ? ForecastDataWidget(
                 cityName: forecastViewModel.forecastCity,
-                forecastList: forecastViewModel.forecastList)
+                forecastList: forecastViewModel.forecastList,
+                temperatureUnit: forecastViewModel.temperatureUnit,
+                windUnit: forecastViewModel.windUnit,
+              )
             : InfoPanelWidget(
                 icon: Icons.cloud_outlined,
                 line1Text: "Enter a city in Weather screen",

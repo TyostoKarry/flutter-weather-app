@@ -36,26 +36,37 @@ class ForecastData {
 
 class ForecastViewModel extends ChangeNotifier {
   String? apiKey;
+  bool useMetricUnits = true;
+  String? unitType;
   ForecastViewState _forecastViewState = ForecastViewState.loading;
   String? _forecastCity;
   List<ForecastData> _forecastList = [];
 
   ForecastViewModel() {
-    _loadApiKey();
+    _loadApiKeyAndUnitType();
   }
 
   ForecastViewState get state => _forecastViewState;
   String? get forecastCity => _forecastCity;
   List<ForecastData> get forecastList => _forecastList;
 
-  Future<void> _loadApiKey() async {
+  Future<void> _loadApiKeyAndUnitType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     apiKey = prefs.getString('api_key') ?? "";
+    useMetricUnits = prefs.getBool('use_metric_units') ?? true;
+    if (useMetricUnits) {
+      unitType = "metric";
+    } else {
+      unitType = "imperial";
+    }
     notifyListeners();
   }
 
+  String get temperatureUnit => useMetricUnits ? "°C" : "°F";
+  String get windUnit => useMetricUnits ? "m/s" : "mph";
+
   void fetchForecastWithCoordinates(double? lat, double? lon) async {
-    await _loadApiKey();
+    await _loadApiKeyAndUnitType();
     if (apiKey == null || apiKey!.isEmpty) {
       _forecastViewState = ForecastViewState.apiKeyError;
       notifyListeners();
@@ -64,7 +75,7 @@ class ForecastViewModel extends ChangeNotifier {
     _forecastViewState = ForecastViewState.loading;
     try {
       Uri uri = Uri.parse(
-          "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey");
+          "https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=$unitType&appid=$apiKey");
       var response = await http.get(uri);
       if (response.statusCode == 401) {
         _forecastViewState = ForecastViewState.apiKeyError;

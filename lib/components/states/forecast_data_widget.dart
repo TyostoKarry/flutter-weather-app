@@ -5,8 +5,15 @@ import 'package:flutter_weather_app/theme/app_colors.dart';
 class ForecastDataWidget extends StatelessWidget {
   final String? cityName;
   final List<ForecastData> forecastList;
+  final String temperatureUnit;
+  final String windUnit;
 
-  ForecastDataWidget({required this.cityName, required this.forecastList});
+  ForecastDataWidget({
+    required this.cityName,
+    required this.forecastList,
+    required this.temperatureUnit,
+    required this.windUnit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +89,7 @@ class ForecastDataWidget extends StatelessWidget {
                           const Icon(Icons.thermostat,
                               color: AppColors.appTextAndIconColor),
                           Text(
-                            "${forecastList[index].temperature} °C",
+                            "${forecastList[index].temperature} $temperatureUnit",
                             style: const TextStyle(
                                 color: AppColors.appTextAndIconColor),
                           ),
@@ -93,7 +100,7 @@ class ForecastDataWidget extends StatelessWidget {
                           const Icon(Icons.air,
                               color: AppColors.appTextAndIconColor),
                           Text(
-                            "${forecastList[index].windSpeed} m/s",
+                            "${forecastList[index].windSpeed} $windUnit",
                             style: const TextStyle(
                                 color: AppColors.appTextAndIconColor),
                           ),

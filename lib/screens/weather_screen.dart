@@ -46,12 +46,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         });
       }
     });
-
-    // Initial fetch after initial build is complete
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<WeatherViewModel>(context, listen: false)
-          .fetchWeatherDataWithLocation();
-    });
   }
 
   @override
@@ -179,7 +173,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
         );
       case WeatherViewState.weatherData:
         return weatherViewModel.weatherData != null
-            ? WeatherDataWidget(weatherData: weatherViewModel.weatherData!)
+            ? WeatherDataWidget(
+                weatherData: weatherViewModel.weatherData!,
+                temperatureUnit: weatherViewModel.temperatureUnit,
+                windUnit: weatherViewModel.windUnit,
+                visibilityUnit: weatherViewModel.visibilityUnit,
+              )
             : InfoPanelWidget(
                 icon: Icons.cloud_outlined,
                 line1Text: "Enter a city to",

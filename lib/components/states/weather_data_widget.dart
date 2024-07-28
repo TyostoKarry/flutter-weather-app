@@ -7,9 +7,17 @@ import "package:flutter_weather_app/theme/app_colors.dart";
 
 class WeatherDataWidget extends StatelessWidget {
   final WeatherData weatherData;
+  final String temperatureUnit;
+  final String windUnit;
+  final String visibilityUnit;
   final DateTime currentTime = DateTime.now();
 
-  WeatherDataWidget({required this.weatherData});
+  WeatherDataWidget({
+    required this.weatherData,
+    required this.temperatureUnit,
+    required this.windUnit,
+    required this.visibilityUnit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +56,7 @@ class WeatherDataWidget extends StatelessWidget {
                             const Icon(Icons.thermostat,
                                 color: AppColors.appTextAndIconColor),
                             const SizedBox(width: 10),
-                            Text("${weatherData.temperature} °C",
+                            Text("${weatherData.temperature} $temperatureUnit",
                                 style: const TextStyle(
                                     color: AppColors.appTextAndIconColor,
                                     fontSize: 30)),
@@ -74,14 +82,14 @@ class WeatherDataWidget extends StatelessWidget {
                     color: AppColors.appTextAndIconColor,
                   ),
                   description: "Feels like",
-                  state: "${weatherData.feelsLike} °C"),
+                  state: "${weatherData.feelsLike} $temperatureUnit"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.air,
                     color: AppColors.appTextAndIconColor,
                   ),
                   description: "Wind speed",
-                  state: "${weatherData.windSpeed} m/s"),
+                  state: "${weatherData.windSpeed} $windUnit"),
               WeatherDataBlock(
                   myIcon: const Icon(
                     Icons.cloud_outlined,
@@ -118,7 +126,7 @@ class WeatherDataWidget extends StatelessWidget {
                     color: AppColors.appTextAndIconColor,
                   ),
                   description: "Visibility",
-                  state: "${weatherData.visibility} m"),
+                  state: "${weatherData.visibility} $visibilityUnit"),
             ],
           ),
         ),
