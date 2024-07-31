@@ -51,13 +51,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     final weatherViewModel = Provider.of<WeatherViewModel>(context);
+    double availableHeight =
+        MediaQuery.of(context).size.height - keyboardSize - 250;
     return Scaffold(
       backgroundColor: AppColors.appBackgroundColor,
       body: Column(
         children: <Widget>[
           AnimatedContainer(
             duration: Duration(milliseconds: animationSpeed),
-            height: MediaQuery.of(context).size.height - 250 - keyboardSize,
+            height: availableHeight > 0 ? availableHeight : 0,
             child: SingleChildScrollView(
               child: _buildBodyBasedOnState(weatherViewModel),
             ),
