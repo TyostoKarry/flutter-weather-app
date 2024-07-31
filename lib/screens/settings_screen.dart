@@ -112,117 +112,120 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: AppColors.appBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 50),
-            SwitchListTile(
-              title: Text(
-                _useMetricUnits ? "°C" : "°F",
-                style:
-                    TextStyle(fontSize: 15, color: AppColors.settingsTextColor),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              const SizedBox(height: 50),
+              SwitchListTile(
+                title: Text(
+                  _useMetricUnits ? "Metric" : "Imperial",
+                  style: TextStyle(
+                      fontSize: 15, color: AppColors.settingsTextColor),
+                ),
+                value: _useMetricUnits,
+                onChanged: _toggleUnits,
+                activeColor: AppColors.appComponentColor,
+                secondary: Text(
+                  "Unit Type:",
+                  style: TextStyle(
+                      fontSize: 15, color: AppColors.settingsTextColor),
+                ),
               ),
-              value: _useMetricUnits,
-              onChanged: _toggleUnits,
-              activeColor: AppColors.appComponentColor,
-              secondary: Text(
-                "Unit Type",
-                style:
-                    TextStyle(fontSize: 15, color: AppColors.settingsTextColor),
+              SwitchListTile(
+                title: Text(
+                  "Auto-search location on startup",
+                  style: TextStyle(
+                      fontSize: 15, color: AppColors.settingsTextColor),
+                ),
+                value: _autoSearchLocationOnLaunch,
+                onChanged: _toggleAutoSearchLocationOnLaunch,
+                activeColor: AppColors.appComponentColor,
               ),
-            ),
-            SwitchListTile(
-              title: Text(
-                "Auto-search location on startup",
-                style:
-                    TextStyle(fontSize: 15, color: AppColors.settingsTextColor),
+              SwitchListTile(
+                title: Text(
+                  "Auto-search city on startup",
+                  style: TextStyle(
+                      fontSize: 15, color: AppColors.settingsTextColor),
+                ),
+                value: _autoSearchCityOnLaunch,
+                onChanged: _toggleAutoSearchCityOnLaunch,
+                activeColor: AppColors.appComponentColor,
               ),
-              value: _autoSearchLocationOnLaunch,
-              onChanged: _toggleAutoSearchLocationOnLaunch,
-              activeColor: AppColors.appComponentColor,
-            ),
-            SwitchListTile(
-              title: Text(
-                "Auto-search city on startup",
-                style:
-                    TextStyle(fontSize: 15, color: AppColors.settingsTextColor),
-              ),
-              value: _autoSearchCityOnLaunch,
-              onChanged: _toggleAutoSearchCityOnLaunch,
-              activeColor: AppColors.appComponentColor,
-            ),
-            TextField(
-              controller: _autoSearchCityController,
-              cursorColor: _autoSearchCityOnLaunch
-                  ? AppColors.appTextFieldColor
-                  : AppColors.settingsTextColorDisabled,
-              decoration: InputDecoration(
-                labelText: "Auto-search city",
-                labelStyle: TextStyle(
+              TextField(
+                controller: _autoSearchCityController,
+                cursorColor: _autoSearchCityOnLaunch
+                    ? AppColors.appTextFieldColor
+                    : AppColors.settingsTextColorDisabled,
+                decoration: InputDecoration(
+                  labelText: "Auto-search city",
+                  labelStyle: TextStyle(
+                    color: _autoSearchCityOnLaunch
+                        ? AppColors.appTextFieldColor
+                        : AppColors.settingsTextColorDisabled,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: _autoSearchCityOnLaunch
+                          ? AppColors.appTextFieldColor
+                          : AppColors.settingsTextColorDisabled,
+                    ),
+                  ),
+                  disabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: _autoSearchCityOnLaunch
+                          ? AppColors.appTextFieldColor
+                          : AppColors.settingsTextColorDisabled,
+                    ),
+                  ),
+                ),
+                style: TextStyle(
                   color: _autoSearchCityOnLaunch
                       ? AppColors.appTextFieldColor
                       : AppColors.settingsTextColorDisabled,
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: _autoSearchCityOnLaunch
-                        ? AppColors.appTextFieldColor
-                        : AppColors.settingsTextColorDisabled,
+                enabled: _autoSearchCityOnLaunch,
+                onChanged: _saveAutoSearchCity,
+              ),
+              const SizedBox(height: 60),
+              TextField(
+                controller: _apiKeyController,
+                obscureText: _obscureText,
+                cursorColor: AppColors.appTextFieldColor,
+                decoration: InputDecoration(
+                  labelText: "OpenWeatherMap apiKey",
+                  labelStyle: TextStyle(color: AppColors.appTextFieldColor),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.appTextFieldColor),
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: _toggleVisibility,
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.appTextFieldColor,
+                    ),
                   ),
                 ),
-                disabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: _autoSearchCityOnLaunch
-                        ? AppColors.appTextFieldColor
-                        : AppColors.settingsTextColorDisabled,
+                style: const TextStyle(color: AppColors.appTextFieldColor),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.appClicableButtonColor),
+                  onPressed: _saveApiKey,
+                  child: const Text(
+                    "Apply API Key",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: AppColors.appClickableButtonTextAndIconColor),
                   ),
                 ),
               ),
-              style: TextStyle(
-                color: _autoSearchCityOnLaunch
-                    ? AppColors.appTextFieldColor
-                    : AppColors.settingsTextColorDisabled,
-              ),
-              enabled: _autoSearchCityOnLaunch,
-              onChanged: _saveAutoSearchCity,
-            ),
-            const SizedBox(height: 60),
-            TextField(
-              controller: _apiKeyController,
-              obscureText: _obscureText,
-              cursorColor: AppColors.appTextFieldColor,
-              decoration: InputDecoration(
-                labelText: "OpenWeatherMap apiKey",
-                labelStyle: TextStyle(color: AppColors.appTextFieldColor),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.appTextFieldColor),
-                ),
-                suffixIcon: IconButton(
-                  onPressed: _toggleVisibility,
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.appTextFieldColor,
-                  ),
-                ),
-              ),
-              style: const TextStyle(color: AppColors.appTextFieldColor),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appClicableButtonColor),
-                onPressed: _saveApiKey,
-                child: const Text(
-                  "Apply API Key",
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.appClickableButtonTextAndIconColor),
-                ),
-              ),
-            ),
-          ],
+              const SizedBox(height: 60),
+            ],
+          ),
         ),
       ),
     );
